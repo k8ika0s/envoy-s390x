@@ -1,3 +1,29 @@
+## s390x Fork Notes
+
+This fork tracks upstream on `main` and keeps active IBM Z / LinuxONE (`s390x`, big-endian) enablement work in dedicated `k8ika0s/s390x-*` branches.
+
+### Highlights
+- Fork-local s390x remediation and validation work for this project is maintained under `k8ika0s/s390x-remediate`.
+- Changes are intentionally architecture-scoped to avoid regressions on amd64/arm64.
+- Mainline syncs happen in this fork only; no upstream push/PR is performed from this flow.
+
+### Requirements
+- Linux host on `s390x` (RHEL/Ubuntu recommended) with `git`.
+- Bazel + C/C++ toolchain prerequisites for Envoy builds.
+- Docker/Podman for containerized build/test workflows where needed.
+
+### Quick Start on s390x
+```bash
+git clone https://github.com/k8ika0s/envoy-s390x.git
+cd envoy-s390x
+git checkout main
+git checkout k8ika0s/s390x-remediate
+bazel build //source/exe:envoy-static
+bazel test //test/common/...
+```
+
+---
+
 ![Envoy Logo](https://github.com/envoyproxy/artwork/blob/main/PNG/Envoy_Logo_Final_PANTONE.png)
 
 [Cloud-native high-performance edge/middle/service proxy](https://www.envoyproxy.io/)
