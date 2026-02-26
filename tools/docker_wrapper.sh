@@ -35,7 +35,32 @@ ENVOY_IP_TEST_VERSIONS=v4only
 EOF
 
 CMDLINE="set -a && . /env && env && /test $*"
-LIB_PATHS="/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu/ /lib64/"
+
+case "$(uname -m)" in
+  x86_64)
+    LIB_PATHS=(/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu /lib64)
+    ;;
+  aarch64|arm64)
+    LIB_PATHS=(/lib/aarch64-linux-gnu /usr/lib/aarch64-linux-gnu /lib64)
+    ;;
+  s390x)
+    LIB_PATHS=(/lib/s390x-linux-gnu /usr/lib/s390x-linux-gnu /lib64)
+    ;;
+  ppc64le)
+    LIB_PATHS=(/lib/powerpc64le-linux-gnu /usr/lib/powerpc64le-linux-gnu /lib64)
+    ;;
+  *)
+    LIB_PATHS=(/lib64 /usr/lib64 /lib /usr/lib)
+    ;;
+esac
+
+# Keep mounts/copies to paths that actually exist on this host.
+EXISTING_LIB_PATHS=()
+for path in "${LIB_PATHS[@]}"; do
+  if [ -d "${path}" ]; then
+    EXISTING_LIB_PATHS+=("${path}")
+  fi
+done
 
 
 if [ "${RUN_REMOTE}" != "yes" ]; then
@@ -43,9 +68,9 @@ if [ "${RUN_REMOTE}" != "yes" ]; then
   LIB_MOUNTS=()
   if [ "${LOCAL_MOUNT}" == "yes" ]
   then
-    for path in $LIB_PATHS; do
+    for path in "${EXISTING_LIB_PATHS[@]}"; do
       LIB_MOUNTS+=(-v "${path}:${path}:ro")
-      done
+    done
   fi
 
   docker run --rm --privileged  -v "${TEST_PATH}:/test" "${LIB_MOUNTS[@]}" -i -v "${ENVFILE}:/env" \
@@ -60,10 +85,10 @@ else
 
   # If some local libraries are necessary, copy them over.
   if [ "${LOCAL_MOUNT}" == "yes" ]; then
-    for path in ${LIB_PATHS}; do
-      # $path. gives us a path ending it /. This means that we will copy the contents into the
+    for path in "${EXISTING_LIB_PATHS[@]}"; do
+      # $path/. copies only the directory contents into the destination path.
       # destination directory, not overwrite the entire directory.
-      docker cp -L "${path}." "${CONTAINER_NAME}:${path}"
+      docker cp -L "${path}/." "${CONTAINER_NAME}:${path}"
     done
   fi
 

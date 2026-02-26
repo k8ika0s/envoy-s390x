@@ -34,6 +34,25 @@ dynamically-scheduled and microservices-oriented, consider joining the CNCF. For
 involved and how Envoy plays a role, read the CNCF
 [announcement](https://www.cncf.io/blog/2017/09/13/cncf-hosts-envoy/).
 
+## s390x (zLinux) Fork Status
+
+This fork (`k8ika0s/envoy-s390x`) carries local build/runtime remediations used
+by `k8ika0s/proxy-s390x` for native `linux/s390x` builds.
+
+### Highlights
+
+- `bazel/external/aws_lc.genrule_cmd` now supports s390x with local toolchains
+  (clang/go/cmake/ninja) and routes s390x to non-FIPS AWS-LC mode.
+- `source/extensions/dynamic_modules/sdk/rust/BUILD` adds missing `s390x`
+  libc++ include paths for Rust SDK build-script compilation.
+- `tools/docker_wrapper.sh` now mounts/copies architecture-appropriate shared
+  library paths, including `s390x-linux-gnu` hosts.
+
+### Typical Usage in This Workstream
+
+This repo is consumed as a patched Envoy source dependency by
+`k8ika0s/proxy-s390x` rather than built standalone first.
+
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/1266/badge)](https://bestpractices.coreinfrastructure.org/projects/1266)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/envoyproxy/envoy/badge)](https://securityscorecards.dev/viewer/?uri=github.com/envoyproxy/envoy)
 [![CLOMonitor](https://img.shields.io/endpoint?url=https://clomonitor.io/api/projects/cncf/envoy/badge)](https://clomonitor.io/projects/cncf/envoy)

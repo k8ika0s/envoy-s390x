@@ -22,6 +22,7 @@ cargo_build_script(
                 "-isystem %s/lib/clang/18/include" % LLVM_PATH,
                 "-isystem %s/include/x86_64-unknown-linux-gnu/c++/v1/" % LLVM_PATH,
                 "-isystem %s/include/aarch64-unknown-linux-gnu/c++/v1/" % LLVM_PATH,
+                "-isystem %s/include/s390x-unknown-linux-gnu/c++/v1/" % LLVM_PATH,
             ]),
         },
         "@platforms//os:linux": {
@@ -31,6 +32,7 @@ cargo_build_script(
                 "-isystem $${pwd}/external/llvm_toolchain_llvm/lib_legacy/clang/18/include",
                 "-isystem $${pwd}/external/llvm_toolchain_llvm/include/x86_64-unknown-linux-gnu/c++/v1/",
                 "-isystem $${pwd}/external/llvm_toolchain_llvm/include/aarch64-unknown-linux-gnu/c++/v1/",
+                "-isystem $${pwd}/external/llvm_toolchain_llvm/include/s390x-unknown-linux-gnu/c++/v1/",
             ]),
         },
         "//conditions:default": {},
